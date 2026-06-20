@@ -11,7 +11,8 @@ app = Flask(__name__)
 app.secret_key = "zgrom_secret_key"
 
 
-init_db()
+init_db(from groups import groups
+app.register_blueprint(groups) )
 
 
 app.register_blueprint(auth)

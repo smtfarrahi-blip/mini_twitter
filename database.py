@@ -8,7 +8,31 @@ def connect():
     return sqlite3.connect(DB)
 
 
-def init_db():
+def init_db(c.execute("""
+    CREATE TABLE IF NOT EXISTS groups(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT UNIQUE,
+        owner TEXT
+    )
+    """)
+
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS group_members(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        group_name TEXT,
+        username TEXT
+    )
+    """)
+
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS group_posts(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        group_name TEXT,
+        username TEXT,
+        text TEXT,
+        media TEXT
+    )
+    """) ):
     db = connect()
     c = db.cursor()
 
