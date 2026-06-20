@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="/static/style.css">
+
+<title>Zgrom Home</title>
+
+<style>
+.nav {
+    display:flex;
+    justify-content:space-around;
+    padding:12px;
+    position:sticky;
+    top:0;
+    background:rgba(0,0,0,0.25);
+    backdrop-filter: blur(10px);
+}
+
+.post-card {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(15px);
+    border-radius: 18px;
+    padding: 12px;
+    margin: 10px;
+}
+
+.group-box {
+    background: rgba(99,102,241,0.2);
+    padding: 10px;
+    border-radius: 14px;
+    margin: 8px 0;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="nav">
+    <a href="/">🏠</a>
+    <a href="/profile">👤</a>
+    <a href="/logout">🚪</a>
+</div>
+
+<div class="post-card">
+
+<h2>سلام {{user}}</h2>
+
+<form method="post" enctype="multipart/form-data">
+    <textarea name="text" placeholder="چی تو سرت هست؟"></textarea>
+    <input type="file" name="img">
+    <button>ارسال پست</button>
+</form>
+
+</div>
+
+<hr>
+
+<div>
+
+<h3>پست‌ها</h3>
+
+{% for p in posts %}
+
+<div class="post-card">
+
+    <b>{{p.user}}</b><br>
+    {{p.text}}<br>
+
+    {% if p.img %}
+        <img src="{{p.img}}" width="100%" style="border-radius:12px;margin-top:8px;">
+    {% endif %}
+
+    <br>
+    ❤️ {{p.likes}} | 💔 {{p.dislikes}}
+
+</div>
+
+{% endfor %}
+
+</div>
+
+<hr>
+
+<div class="post-card">
+
+<h3>👥 گروه‌ها</h3>
+
+<form action="/create_group" method="post">
+    <input name="name" placeholder="اسم گروه">
+    <button>ساخت گروه</button>
+</form>
+
+<hr>
+
+{% for g in groups %}
+
+<div class="group-box">
+
+    <b>{{g.name}}</b><br>
+    <a href="/group/{{g.name}}">ورود</a> |
+    <a href="/join/{{g.name}}">عضویت</a>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</body>
+</html>
