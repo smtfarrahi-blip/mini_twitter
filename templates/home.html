@@ -1,52 +1,53 @@
+
 <!DOCTYPE html>
 <html lang="fa">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<link rel="stylesheet" href="/static/style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Zgrom</title>
 
+<link rel="stylesheet" href="/static/style.css">
+
 <style>
 body{
-    text-align:center;
-}
-
-/* نوار بالا */
-.nav{
+    margin:0;
+    font-family: sans-serif;
+    background: linear-gradient(135deg,#0f172a,#1e1b4b);
+    color:white;
     display:flex;
-    justify-content:space-around;
-    padding:14px;
-    position:sticky;
-    top:0;
-    background:rgba(255,255,255,0.06);
-    backdrop-filter: blur(15px);
-    border-radius:0 0 18px 18px;
+    flex-direction:column;
+    align-items:center;
 }
 
-/* کارت گلس */
+/* کانتینر اصلی */
+.container{
+    width:100%;
+    max-width:600px;
+    padding:15px;
+}
+
+/* گلس کارت */
 .glass{
     background: rgba(255,255,255,0.08);
     backdrop-filter: blur(18px);
     border-radius: 20px;
-    padding: 18px;
-    margin: 15px auto;
-    width: 92%;
-    max-width: 520px;
+    padding: 20px;
+    margin: 15px 0;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    text-align:center;
 }
 
 /* دکمه‌ها */
 button{
     width:100%;
     padding:14px;
+    margin-top:10px;
     border:none;
     border-radius:14px;
+    font-size:18px;
     background:#6366f1;
     color:white;
-    font-size:18px;
-    margin-top:10px;
 }
 
 /* input */
@@ -57,21 +58,30 @@ input,textarea{
     border-radius:12px;
     border:none;
     font-size:16px;
+    text-align:center;
 }
 
 /* پست */
 .post{
-    background:rgba(255,255,255,0.06);
-    border-radius:18px;
+    background: rgba(255,255,255,0.06);
+    border-radius:15px;
     padding:15px;
-    margin:10px 0;
+    margin-top:10px;
+    text-align:right;
 }
 
 /* گروه */
 .group{
-    background:rgba(99,102,241,0.2);
+    background: rgba(99,102,241,0.2);
     padding:12px;
     border-radius:14px;
+    margin-top:10px;
+}
+
+/* عکس */
+img{
+    width:100%;
+    border-radius:12px;
     margin-top:10px;
 }
 </style>
@@ -80,30 +90,23 @@ input,textarea{
 
 <body>
 
-<!-- NAV -->
-<div class="nav">
-    <a href="/">🏠</a>
-    <a href="/profile">👤</a>
-    <a href="/logout">🚪</a>
-</div>
+<div class="container">
 
-<!-- USER CARD -->
+<!-- HEADER -->
 <div class="glass">
     <h2>سلام {{user}} 👋</h2>
+    <p>به Zgrom خوش آمدی</p>
 </div>
 
-<!-- POST FORM -->
+<!-- POST -->
 <div class="glass">
 
-<h3>📝 پست جدید</h3>
+<h3>📝 ساخت پست</h3>
 
 <form method="post" enctype="multipart/form-data">
-
-<textarea name="text" placeholder="چی تو سرت هست؟"></textarea>
-<input type="file" name="img">
-
-<button>ارسال پست</button>
-
+    <textarea name="text" placeholder="چی تو سرت هست؟"></textarea>
+    <input type="file" name="img">
+    <button>ارسال</button>
 </form>
 
 </div>
@@ -121,7 +124,7 @@ input,textarea{
     <p>{{p.text}}</p>
 
     {% if p.img %}
-        <img src="{{p.img}}" style="width:100%;border-radius:12px;margin-top:10px;">
+        <img src="{{p.img}}">
     {% endif %}
 
     <p>❤️ {{p.likes}} | 💔 {{p.dislikes}}</p>
@@ -138,24 +141,21 @@ input,textarea{
 <h3>👥 گروه‌ها</h3>
 
 <form action="/create_group" method="post">
-    <input name="name" placeholder="اسم گروه">
+    <input name="name" placeholder="نام گروه">
     <button>ساخت گروه</button>
 </form>
-
-<hr>
 
 {% for g in groups %}
 
 <div class="group">
-
     <b>{{g.name}}</b><br>
-
     <a href="/group/{{g.name}}">ورود</a> |
     <a href="/join/{{g.name}}">عضویت</a>
-
 </div>
 
 {% endfor %}
+
+</div>
 
 </div>
 
