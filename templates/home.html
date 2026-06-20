@@ -6,32 +6,73 @@
 
 <link rel="stylesheet" href="/static/style.css">
 
-<title>Zgrom Home</title>
+<title>Zgrom</title>
 
 <style>
-.nav {
+body{
+    text-align:center;
+}
+
+/* نوار بالا */
+.nav{
     display:flex;
     justify-content:space-around;
-    padding:12px;
+    padding:14px;
     position:sticky;
     top:0;
-    background:rgba(0,0,0,0.25);
-    backdrop-filter: blur(10px);
-}
-
-.post-card {
-    background: rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.06);
     backdrop-filter: blur(15px);
-    border-radius: 18px;
-    padding: 12px;
-    margin: 10px;
+    border-radius:0 0 18px 18px;
 }
 
-.group-box {
-    background: rgba(99,102,241,0.2);
-    padding: 10px;
-    border-radius: 14px;
-    margin: 8px 0;
+/* کارت گلس */
+.glass{
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(18px);
+    border-radius: 20px;
+    padding: 18px;
+    margin: 15px auto;
+    width: 92%;
+    max-width: 520px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* دکمه‌ها */
+button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:14px;
+    background:#6366f1;
+    color:white;
+    font-size:18px;
+    margin-top:10px;
+}
+
+/* input */
+input,textarea{
+    width:100%;
+    padding:14px;
+    margin-top:10px;
+    border-radius:12px;
+    border:none;
+    font-size:16px;
+}
+
+/* پست */
+.post{
+    background:rgba(255,255,255,0.06);
+    border-radius:18px;
+    padding:15px;
+    margin:10px 0;
+}
+
+/* گروه */
+.group{
+    background:rgba(99,102,241,0.2);
+    padding:12px;
+    border-radius:14px;
+    margin-top:10px;
 }
 </style>
 
@@ -39,43 +80,51 @@
 
 <body>
 
+<!-- NAV -->
 <div class="nav">
     <a href="/">🏠</a>
     <a href="/profile">👤</a>
     <a href="/logout">🚪</a>
 </div>
 
-<div class="post-card">
+<!-- USER CARD -->
+<div class="glass">
+    <h2>سلام {{user}} 👋</h2>
+</div>
 
-<h2>سلام {{user}}</h2>
+<!-- POST FORM -->
+<div class="glass">
+
+<h3>📝 پست جدید</h3>
 
 <form method="post" enctype="multipart/form-data">
-    <textarea name="text" placeholder="چی تو سرت هست؟"></textarea>
-    <input type="file" name="img">
-    <button>ارسال پست</button>
+
+<textarea name="text" placeholder="چی تو سرت هست؟"></textarea>
+<input type="file" name="img">
+
+<button>ارسال پست</button>
+
 </form>
 
 </div>
 
-<hr>
+<!-- POSTS -->
+<div class="glass">
 
-<div>
-
-<h3>پست‌ها</h3>
+<h3>🔥 پست‌ها</h3>
 
 {% for p in posts %}
 
-<div class="post-card">
+<div class="post">
 
     <b>{{p.user}}</b><br>
-    {{p.text}}<br>
+    <p>{{p.text}}</p>
 
     {% if p.img %}
-        <img src="{{p.img}}" width="100%" style="border-radius:12px;margin-top:8px;">
+        <img src="{{p.img}}" style="width:100%;border-radius:12px;margin-top:10px;">
     {% endif %}
 
-    <br>
-    ❤️ {{p.likes}} | 💔 {{p.dislikes}}
+    <p>❤️ {{p.likes}} | 💔 {{p.dislikes}}</p>
 
 </div>
 
@@ -83,9 +132,8 @@
 
 </div>
 
-<hr>
-
-<div class="post-card">
+<!-- GROUPS -->
+<div class="glass">
 
 <h3>👥 گروه‌ها</h3>
 
@@ -98,9 +146,10 @@
 
 {% for g in groups %}
 
-<div class="group-box">
+<div class="group">
 
     <b>{{g.name}}</b><br>
+
     <a href="/group/{{g.name}}">ورود</a> |
     <a href="/join/{{g.name}}">عضویت</a>
 
