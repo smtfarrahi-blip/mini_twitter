@@ -9,5 +9,3 @@ def get_posts():
 
     conn.close()
     return posts
-
-
