@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Zweez</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<h2>Zweez 🐝</h2>
+
+<form action="/post" method="POST" enctype="multipart/form-data">
+    <input type="text" name="text" placeholder="چی تو ذهنته؟">
+    <input type="file" name="image">
+    <button type="submit">ارسال</button>
+</form>
+
+<hr>
+
+{% for post in posts %}
+<div class="post">
+
+    <b>{{ post[0] }}</b>
+
+    {% if post[2] %}
+        <img src="{{ url_for('uploaded_file', filename=post[2]) }}" class="post-img">
+    {% endif %}
+
+    <p>{{ post[1] }}</p>
+
+    <span>❤️ {{ post[3] }}</span>
+
+</div>
+{% endfor %}
+
+</body>
+</html>
