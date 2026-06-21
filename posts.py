@@ -1,12 +1,12 @@
-from flask import Blueprint, request, session, redirect, render_template
+from flask import Blueprint, request, session, redirect
 from database import connect
-import uuid
 import os
 from werkzeug.utils import secure_filename
 
 posts = Blueprint("posts", __name__)
 
-UPLOAD = "uploads/images"
+UPLOAD_IMG = "uploads/images"
+UPLOAD_VID = "uploads/videos"
 
 
 @posts.route("/", methods=["GET","POST"])
@@ -15,58 +15,156 @@ def home():
     if "user" not in session:
         return redirect("/login")
 
-    db = connect()
-    c = db.cursor()
-
-    # ارسال پست
     if request.method == "POST":
 
-        text = request.form["text"]
-        img = ""
+        text = request.form.get("text","")
 
-        file = request.files.get("img")
+        file = request.files.get("media")
+        media = ""
 
         if file and file.filename:
 
             filename = secure_filename(file.filename)
-            path = os.path.join(UPLOAD, filename)
+
+            if filename.endswith((".mp4",".mov",".avi")):
+                path = os.path.join(UPLOAD_VID, filename)
+            else:
+                path = os.path.join(UPLOAD_IMG, filename)
+
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+
             file.save(path)
-            img = "/" + path
+
+            media = "/" + path
+
+
+        db = connect()
+        c = db.cursor()
 
         c.execute("""
-        INSERT INTO posts(user,text,img,likes,dislikes)
-        VALUES(?,?,?,?,?)
-        """, (session["user"], text, img, 0, 0))
+        INSERT INTO posts(username,text,image,likes)
+        VALUES(?,?,?,?)
+        """,
+        (
+            session["user"],
+            text,
+            media,
+            0
+        ))
 
         db.commit()
+        db.close()
 
-    # گرفتن پست‌ها
-    c.execute("SELECT user,text,img,likes,dislikes FROM posts ORDER BY id DESC")
-    post_rows = c.fetchall()
+        return redirect("/")
 
-    posts_list = []
-    for p in post_rows:
-        posts_list.append({
-            "user": p[0],
-            "text": p[1],
-            "img": p[2],
-            "likes": p[3],
-            "dislikes": p[4]
-        })
 
-    # گرفتن گروه‌ها
-    c.execute("SELECT name FROM groups")
-    groups_rows = c.fetchall()
+    db = connect()
+    c = db.cursor()
 
-    groups_list = []
-    for g in groups_rows:
-        groups_list.append({"name": g[0]})
+    c.execute("""
+    SELECT username,text,image,likes
+    FROM posts
+    ORDER BY id DESC
+    """)
 
+    data = c.fetchall()
     db.close()
 
-    return render_template(
-        "home.html",
-        user=session["user"],
-        posts=posts_list,
-        groups=groups_list
-    )
+
+    html = """
+    <style>
+
+    body{
+    background:#050505;
+    color:white;
+    font-family:sans-serif;
+    }
+
+    .card{
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(15px);
+    border-radius:20px;
+    padding:20px;
+    margin:15px;
+    border:1px solid rgba(255,255,255,0.2);
+    }
+
+    .logo{
+    color:#ffd400;
+    font-size:30px;
+    }
+
+    </style>
+
+    <h1 class="logo">🐝 Zweez</h1>
+
+    <form method="post" enctype="multipart/form-data"
+    class="card">
+
+    <textarea name="text"
+    placeholder="پیام جدید..."
+    style="width:100%;height:80px;"></textarea>
+
+    <input type="file" name="media">
+
+    <button>
+    ارسال 🐝
+    </button>
+
+    </form>
+    """
+
+
+    for p in data:
+
+        html += f"""
+        <div class="card">
+
+        <b style="color:#ffd400">
+        🐝 {p[0]}
+        </b>
+
+        <br><br>
+
+        {p[1]}
+
+        <br>
+        """
+
+        if p[2]:
+
+            if p[2].endswith(
+            (".mp4",".mov",".avi")):
+
+                html += f"""
+                <video width="300" controls>
+                <source src="{p[2]}">
+                </video>
+                """
+
+            else:
+
+                html += f"""
+                <img src="{p[2]}"
+                width="300"
+                style="border-radius:15px;">
+                """
+
+
+        html += f"""
+
+        <br>
+        💛 {p[3]}
+
+        </div>
+
+        """
+
+
+    return html
+
+
+
+
+
+
