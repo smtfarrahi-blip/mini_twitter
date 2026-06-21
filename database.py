@@ -1,4 +1,4 @@
-kimport sqlite3
+import sqlite3
 
 
 DB = "zgrom.db"
